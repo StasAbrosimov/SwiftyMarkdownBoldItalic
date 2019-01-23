@@ -487,7 +487,7 @@ enum LineStyle : Int {
 			}
 			
 		}
-		if style == .bold && bold.fontName {
+		if style == .bold && bold.fontName == nil {
 			if let boldDescriptor = finalFontDescriptor.withSymbolicTraits(.traitBold) {
 				finalFont = UIFont(descriptor: boldDescriptor, size: styleSize)
 			}
