@@ -25,6 +25,12 @@ If that is not set, then the system default will be used.
 	public var fontName : String? = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body).fontName
 	public var color = UIColor.black
 	public var fontSize : CGFloat = 0.0
+	
+    	public func boldOrItalic() -> BasicStyles
+    	{
+        	self.fontName = nil
+        	return self
+    	}
 }
 
 enum LineType : Int {
@@ -82,10 +88,10 @@ enum LineStyle : Int {
 	open var link = BasicStyles()
 	
 	/// The styles to apply to any bold text found in the Markdown
-	open var bold = BasicStyles()
+	open var bold = BasicStyles().boldOrItalic()
 	
 	/// The styles to apply to any italic text found in the Markdown
-	open var italic = BasicStyles()
+	open var italic = BasicStyles().boldOrItalic()
 	
 	/// The styles to apply to any code blocks or inline code text found in the Markdown
 	open var code = BasicStyles()
@@ -441,6 +447,20 @@ enum LineStyle : Int {
 			attributes[NSAttributedString.Key.foregroundColor] = link.color
 		}
 		
+		if style == .bold
+        	{
+            		fontName = bold.fontName
+            		fontSize = bold.fontSize
+            		attributes[NSAttributedString.Key.foregroundColor] = bold.color
+        	}
+        
+        	if style == .italic
+        	{
+            		fontName = italic.fontName
+            		fontSize = italic.fontSize
+            		attributes[NSAttributedString.Key.foregroundColor] = italic.color
+        	}
+		
 		// Fallback to body
 		if let _ = fontName {
 			
@@ -461,13 +481,13 @@ enum LineStyle : Int {
 		}
 		
 		let finalFontDescriptor = finalFont.fontDescriptor
-		if style == .italic {
+		if style == .italic && italic.fontName == nil {
 			if let italicDescriptor = finalFontDescriptor.withSymbolicTraits(.traitItalic) {
 				finalFont = UIFont(descriptor: italicDescriptor, size: styleSize)
 			}
 			
 		}
-		if style == .bold {
+		if style == .bold && bold.fontName {
 			if let boldDescriptor = finalFontDescriptor.withSymbolicTraits(.traitBold) {
 				finalFont = UIFont(descriptor: boldDescriptor, size: styleSize)
 			}
